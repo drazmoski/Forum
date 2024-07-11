@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+        .card-img-top {
+            object-fit: cover;
+            height: 300px;
+            width: 100%;
+        }
+        .card-body {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 th:text="'Profile: ' + ${user.username}">Username's Profile</h2>
+            <p>Followers: <span th:text="${followerCount}">0</span></p>
+            <p>Following: <span th:text="${followingCount}">0</span></p>
+
+            <div th:if="${!isOwnProfile}">
+                <form th:action="@{'/follow/' + ${user.id}}" method="post" th:if="${!isFollowing}">
+                    <button type="submit" class="btn btn-primary mb-3">Follow</button>
+                </form>
+                <form th:action="@{'/follow/unfollow/' + ${user.id}}" method="post" th:if="${isFollowing}">
+                    <button type="submit" class="btn btn-secondary mb-3">Unfollow</button>
+                </form>
+            </div>
+
+            <h3>Posts</h3>
+            <div class="card-columns">
+                <div class="card mb-3" th:each="post : ${posts}">
+                    <a th:href="@{'/post/' + ${post.id}}" class="card">
+                        <img th:if="${post.image != null}" th:src="@{${post.image}}" class="card-img-top" alt="Post Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${post.user.username}">Username</h5>
+                            <p class="card-text" th:text="${post.content}">Post content</p>
+                            <p class="card-text"><small class="text-muted" th:text="${post.timestamp}">Post timestamp</small></p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <a href="/explore" class="btn btn-secondary mt-3">Back to Explore</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

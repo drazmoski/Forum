@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Following</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .card {
+            border: none; /* Remove the default border */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: add a subtle shadow */
+        }
+        .card-body {
+            color: black;
+        }
+        .card-img-top {
+            object-fit: cover;
+            height: 300px;
+            width: 100%;
+        }
+        .card-title a {
+            color: black;
+            text-decoration: none;
+        }
+        .card-title a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Posts from Users You Are Following</h2>
+            <div class="card-columns">
+                <div class="card mb-4" th:each="post : ${posts}">
+                    <a th:href="@{'/post/' + ${post.id}}" class="card">
+                        <img th:if="${post.image != null}" th:src="@{${post.image}}" class="card-img-top" alt="Post Image">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a th:href="@{'/user-profile/' + ${post.user.id}}" style="color: black; text-decoration: none;" th:text="${post.user.username}">Username</a>
+                            </h5>
+                            <p class="card-text" th:text="${post.content}">Post content</p>
+                            <p class="card-text"><small class="text-muted" th:text="${post.timestamp}">Post timestamp</small></p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <a href="/explore" class="btn btn-secondary mt-3">Back to Explore</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

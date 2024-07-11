@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Details</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <img th:src="@{${post.image}}" class="card-img-top" alt="Post Image">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a th:href="@{'/user-profile/' + ${post.user.id}}" style="color: black; text-decoration: none;" th:text="${post.user.username}">Username</a>
+                    </h5>
+                    <p class="card-text" th:text="${post.content}">Post content</p>
+                    <p class="card-text"><small class="text-muted" th:text="${post.timestamp}">Post timestamp</small></p>
+                    <div class="d-flex justify-content-between">
+                        <div th:if="${#authentication.principal.id == post.user.id}">
+                            <form th:action="@{'/post/{postId}/delete' (postId=${post.id})}" th:method="post">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                            <a th:href="@{'/post/{postId}/edit' (postId=${post.id})}" class="btn btn-sm btn-info">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </div>
+                        <div th:if="${isLiked}">
+                            <form th:action="@{'/api/likes/unlike' (postId=${post.id}, userId=${#authentication.principal.id})}" th:method="post">
+                                <button type="submit" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-heart-broken"></i> Unlike
+                                </button>
+                            </form>
+                        </div>
+                        <div th:if="${!isLiked}">
+                            <form th:action="@{'/api/likes' (postId=${post.id}, userId=${#authentication.principal.id})}" th:method="post">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-heart"></i> Like
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="card-text mt-2">Likes: <span th:text="${likeCount}">0</span></p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Comments</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="comment : ${comments}">
+                            <p><strong>
+                                <a th:href="@{'/user-profile/' + ${comment.author.id}}" style="color: black; text-decoration: none;" th:text="${comment.author.username}">Username</a>
+                            </strong></p>
+                            <p th:text="${comment.comment}">Comment text</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add a Comment</h5>
+                    <form th:action="@{'/api/comments' (userId=${#authentication.principal.id}, postId=${post.id})}" method="post">
+                        <div class="form-group">
+                            <textarea class="form-control" id="commentText" name="commentText" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+            <a href="/explore" class="btn btn-secondary mt-3">Back to Explore</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
