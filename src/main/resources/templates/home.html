@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Explore Posts</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .centered-button {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .centered-button button {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        .post-card {
+            width: 100%;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .post-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .post-card .card-img-top {
+            object-fit: cover;
+            height: 300px;
+        }
+        .post-card .card-body {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="centered-button" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <a th:href="@{/create_post}">
+            <button>Create Post</button>
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div th:each="post : ${posts}" class="col-md-3">
+                    <a th:href="@{'/post/' + ${post.id}}" class="post-card">
+                        <div class="card">
+                            <img th:src="@{${post.image}}" class="card-img-top" alt="Post Image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${post.user.username}">Username</h5>
+                                <p class="card-text" th:text="${post.content}">Post content</p>
+                                <p class="card-text"><small class="text-muted" th:text="${post.timestamp}">Post timestamp</small></p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
